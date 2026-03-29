@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: campus-match-web
+    ports:
+      - "5000:5000"
+    volumes:
+      # 代码热更新：本地改代码，容器内自动同步
+      - .:/app
+      # 数据库持久化：容器删了数据还在
+      - ./docker-data/db:/app/instance
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=development
+    restart: unless-stopped

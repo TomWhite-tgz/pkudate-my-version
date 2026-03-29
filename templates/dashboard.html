@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}主页 - PKU Date{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>👋 {{ user.nickname or '同学' }}，欢迎回来</h2>
+
+    <div class="status-cards">
+        <div class="status-card">
+            <h3>📋 个人资料</h3>
+            {% if user.gender and user.target_gender and user.department %}
+                <p class="status done">✅ 已完善</p>
+                <a href="{{ url_for('profile') }}" class="btn btn-sm" style="margin-top:0.5rem;">修改资料</a>
+            {% else %}
+                <p class="status pending">⚠️ 未完善</p>
+                <p style="font-size:0.8rem; color:#999; margin:0.3rem 0;">完善资料后才能匹配</p>
+                <a href="{{ url_for('profile') }}" class="btn btn-sm" style="margin-top:0.5rem;">去完善</a>
+            {% endif %}
+        </div>
+
+        <div class="status-card">
+            <h3>📝 匹配问卷</h3>
+            {% if user.questionnaire_done %}
+                <p class="status done">✅ 已提交</p>
+                <a href="{{ url_for('questionnaire') }}" class="btn btn-sm" style="margin-top:0.5rem;">重新填写</a>
+            {% else %}
+                <p class="status pending">⚠️ 未填写</p>
+                <p style="font-size:0.8rem; color:#999; margin:0.3rem 0;">填写问卷后等待匹配</p>
+                <a href="{{ url_for('questionnaire') }}" class="btn btn-sm" style="margin-top:0.5rem;">去填写</a>
+            {% endif %}
+        </div>
+
+        <div class="status-card">
+            <h3>💘 匹配结果</h3>
+            {% if matches %}
+                <p class="status done">✅ 已有 {{ matches|length }} 个匹配</p>
+                <a href="{{ url_for('results') }}" class="btn btn-sm" style="margin-top:0.5rem;">查看结果</a>
+            {% else %}
+                <p class="status pending">⏳ 等待中</p>
+                <p style="font-size:0.8rem; color:#999; margin:0.3rem 0;">匹配完成后会通知你</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 进度提示 -->
+    {% if not user.gender or not user.target_gender or not user.department %}
+        <div class="status-card" style="background:rgba(255,200,200,0.9) !important; text-align:center; padding:1.5rem;">
+            <p style="font-size:1rem;">👆 请先完善个人资料</p>
+        </div>
+    {% elif not user.questionnaire_done %}
+        <div class="status-card" style="background:rgba(255,230,200,0.9) !important; text-align:center; padding:1.5rem;">
+            <p style="font-size:1rem;">👆 请填写匹配问卷，等待下一轮匹配</p>
+        </div>
+    {% elif not matches %}
+        <div class="status-card" style="background:rgba(200,230,255,0.9) !important; text-align:center; padding:1.5rem;">
+            <p style="font-size:1rem;">✅ 一切就绪！等待下一轮匹配开始</p>
+        </div>
+    {% endif %}
+
+    <!-- 管理员面板 -->
+    {% if user.email in ['your_email@stu.pku.edu.cn'] %}
+    <div class="admin-panel" style="margin-top:1.5rem;">
+        <h3>🔧 管理员</h3>
+        <p style="color:#666; font-size:0.85rem; margin-bottom:1rem;">
+            当前 {{ user_count }} 位用户已完成问卷
+        </p>
+        <form method="POST" action="{{ url_for('admin_run_matching') }}">
+            <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('确定执行匹配？将通知所有匹配成功的用户')">
+                🚀 执行匹配（第{{ next_round }}轮）
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}注销账号 - PKU Date{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h2>⚠️ 注销账号</h2>
+    <p class="form-subtitle" style="color: #e74c3c;">
+        此操作不可恢复，将永久删除你的所有数据
+    </p>
+    <form method="POST">
+        <div class="form-group">
+            <label>输入 <strong>DELETE</strong> 确认注销</label>
+            <input type="text" name="confirm" placeholder="请输入 DELETE" required>
+        </div>
+        <button type="submit" class="btn btn-primary"
+                style="background:#e74c3c"
+                onclick="return confirm('最后确认：真的要注销吗？')">
+            确认注销
+        </button>
+    </form>
+    <p class="form-footer"><a href="{{ url_for('profile') }}">取消，返回资料页</a></p>
+</div>
+{% endblock %}

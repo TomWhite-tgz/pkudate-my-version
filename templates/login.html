@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}登录 - PKU Date{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h2>👋 欢迎回来</h2>
+    <p class="form-subtitle">使用教育邮箱 + 验证码登录</p>
+
+    <form method="POST">
+        <div class="form-group">
+            <label>教育邮箱</label>
+            <div class="input-row">
+                <input type="email" name="email" id="email"
+                       placeholder="yourname@stu.pku.edu.cn" required>
+                <button type="button" id="sendCodeBtn" onclick="sendCode('login')">
+                    发送验证码
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>验证码</label>
+            <input type="text" name="code" placeholder="6位验证码" maxlength="6" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">登录</button>
+    </form>
+
+    <p class="form-footer">
+        没有账号？<a href="{{ url_for('register') }}">去注册</a>
+    </p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let countdown = 0;
+
+async function sendCode(purpose) {
+    const email = document.getElementById('email').value.trim();
+    const btn = document.getElementById('sendCodeBtn');
+
+    if (!email) { alert('请输入邮箱'); return; }
+    if (countdown > 0) return;
+
+    btn.disabled = true;
+    btn.textContent = '发送中...';
+
+    try {
+        const res = await fetch('/api/send-code', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email: email, purpose: purpose })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            alert(data.message || '验证码已发送');
+            startCountdown(60);
+        } else {
+            alert(data.error || '发送失败');
+            btn.disabled = false;
+            btn.textContent = '发送验证码';
+        }
+    } catch(e) {
+        alert('网络错误');
+        btn.disabled = false;
+        btn.textContent = '发送验证码';
+    }
+}
+
+function startCountdown(seconds) {
+    countdown = seconds;
+    const btn = document.getElementById('sendCodeBtn');
+    const timer = setInterval(() => {
+        countdown--;
+        btn.textContent = `${countdown}s`;
+        if (countdown <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+            btn.textContent = '发送验证码';
+        }
+    }, 1000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}隐私协议 - PKU Date{% endblock %}
+
+{% block content %}
+<div class="form-page" style="max-width:700px;">
+    <h2>🔒 隐私协议</h2>
+
+    <div style="font-size:0.9rem; color:#555; line-height:1.9;">
+        <h3 style="margin-top:1.5rem;">1. 我们收集的信息</h3>
+        <p>教育邮箱、昵称、性别、年级、院系、自我介绍、微信号、问卷答案。</p>
+
+        <h3 style="margin-top:1.5rem;">2. 信息用途</h3>
+        <p>仅用于匹配算法计算和向匹配成功的双方展示对方资料。我们不会将你的信息用于任何其他目的。</p>
+
+        <h3 style="margin-top:1.5rem;">3. 信息安全</h3>
+        <p>所有数据传输通过 HTTPS 加密。我们不存储密码（使用邮箱验证码登录）。敏感信息在服务器端加密存储。</p>
+
+        <h3 style="margin-top:1.5rem;">4. 信息可见范围</h3>
+        <ul style="padding-left:1.5rem;">
+            <li>你的微信号：仅匹配成功的对方可见</li>
+            <li>你的昵称、院系、自我介绍：仅匹配成功的对方可见</li>
+            <li>你的邮箱：仅你自己可见</li>
+            <li>你的问卷答案：仅用于算法计算，任何人不可见</li>
+        </ul>
+
+        <h3 style="margin-top:1.5rem;">5. 数据删除</h3>
+        <p>你可以随时在个人资料页面注销账号，我们会立即永久删除你的所有数据，包括个人资料、问卷答案和匹配记录。</p>
+
+        <h3 style="margin-top:1.5rem;">6. 免责声明</h3>
+        <p>本平台为非官方学生项目，与北京大学无关。我们尽最大努力保护你的信息安全，但无法做出绝对安全的保证。使用本平台即表示你理解并接受以上条款。</p>
+    </div>
+
+    <div style="text-align:center; margin-top:2rem;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">返回首页</a>
+    </div>
+</div>
+{% endblock %}

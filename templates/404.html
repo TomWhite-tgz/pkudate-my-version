@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}页面不存在 - PKU Date{% endblock %}
+
+{% block content %}
+<div class="form-page" style="text-align:center;">
+    <h2>😅 404</h2>
+    <p style="color:#666; margin:1rem 0;">页面不存在或已被删除</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">返回首页</a>
+</div>
+{% endblock %}

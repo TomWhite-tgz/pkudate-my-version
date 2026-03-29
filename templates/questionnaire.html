@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}匹配问卷 - 校园匹配{% endblock %}
+
+{% block content %}
+<div class="form-page questionnaire">
+    <h2>📝 匹配问卷</h2>
+    <p class="tip">认真作答，算法会根据你的回答寻找最合适的人～</p>
+
+    <form method="POST">
+        {% for q in questions %}
+        <div class="question-card">
+            <h3>{{ loop.index }}. {{ q.text }}</h3>
+            <div class="options">
+                {% for option in q.options_list %}
+                <label class="option">
+                    <input type="radio" name="q_{{ q.id }}" value="{{ loop.index0 }}" required>
+                    <span>{{ option }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary btn-lg">提交问卷</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}匹配结果 - 校园匹配{% endblock %}
+
+{% block content %}
+<div class="results-page">
+    <h2>💘 你的匹配结果</h2>
+
+    {% if matches %}
+        {% for match in matches %}
+        <div class="match-card">
+            <div class="match-header">
+                <span class="match-score">匹配度：{{ "%.0f"|format(match.score * 100) }}%</span>
+                <span class="match-round">第{{ match.round_number }}轮</span>
+            </div>
+
+            <div class="match-info">
+                <h3>{{ match.matched_user.nickname or '匿名用户' }}</h3>
+                <p>📚 {{ match.matched_user.department or '未填写' }} · {{ match.matched_user.grade or '未填写' }}</p>
+
+                {% if match.matched_user.bio %}
+                    <p class="bio">💬 {{ match.matched_user.bio }}</p>
+                {% endif %}
+
+                {% if match.matched_user.wechat %}
+                    <p class="wechat">📱 微信号：<strong>{{ match.matched_user.wechat }}</strong></p>
+                {% else %}
+                    <p class="wechat">📱 对方暂未留下微信号</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>🕐 暂无匹配结果</p>
+            <p>请确保已填写问卷，等待下一轮匹配～</p>
+
+            {% if not current_user.questionnaire_done %}
+                <a href="{{ url_for('questionnaire') }}" class="btn btn-primary">去填问卷</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

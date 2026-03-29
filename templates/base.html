@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}PKU Date{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💕</text></svg>">
+
+    <style>
+        .global-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+        .global-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 35%;
+        }
+        .global-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(10, 10, 15, 0.55) 0%,
+                rgba(10, 10, 15, 0.45) 30%,
+                rgba(10, 10, 15, 0.40) 50%,
+                rgba(10, 10, 15, 0.50) 70%,
+                rgba(10, 10, 15, 0.70) 100%
+            );
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- 背景图：每个页面可以覆盖 bg_image 变量 -->
+    {% if bg_image is defined and bg_image %}
+    <div class="global-bg">
+        <img src="{{ url_for('static', filename='images/' + bg_image) }}" alt="">
+        <div class="global-bg-overlay"></div>
+    </div>
+    {% endif %}
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="/" class="logo">
+                <span class="logo-icon">💕</span>
+                <span class="logo-text">PKU Date</span>
+            </a>
+            <div class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}">主页</a>
+                    <a href="{{ url_for('questionnaire') }}">问卷</a>
+                    <a href="{{ url_for('results') }}">匹配</a>
+                    <a href="{{ url_for('profile') }}">我的</a>
+                    <a href="{{ url_for('logout') }}" class="nav-btn-outline">退出</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-btn-outline">登录</a>
+                    <a href="{{ url_for('register') }}" class="nav-btn-solid">注册</a>
+                {% endif %}
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobileMenu">
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}">🏠 主页</a>
+            <a href="{{ url_for('questionnaire') }}">📝 问卷</a>
+            <a href="{{ url_for('results') }}">💘 匹配结果</a>
+            <a href="{{ url_for('profile') }}">👤 个人资料</a>
+            <a href="{{ url_for('logout') }}">🚪 退出</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">🔐 登录</a>
+            <a href="{{ url_for('register') }}">✨ 注册</a>
+        {% endif %}
+    </div>
+
+    <!-- 消息提示 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}" onclick="this.remove()">
+                        {% if category == 'success' %}✅{% elif category == 'error' %}❌{% else %}💡{% endif %}
+                        {{ message }}
+                        <span class="flash-close">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- 主内容 -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 页脚 -->
+    {% block footer %}
+    <footer class="footer-full">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <span class="logo-icon">💕</span>
+            <span>PKU Date</span>
+        </div>
+        <p>让算法帮你找到燕园里的 TA</p>
+        <div class="footer-links">
+            <span>仅限北京大学在校师生</span>
+            <span>·</span>
+            <a href="/privacy" style="color:rgba(255,255,255,0.4);">隐私协议</a>
+            <span>·</span>
+            <span>非官方项目</span>
+        </div>
+        <p class="footer-copyright">© 2025 PKU Date</p>
+    </div>
+</footer>
+    {% endblock %}
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.mobile-menu-btn') && !e.target.closest('.mobile-menu')) {
+                document.getElementById('mobileMenu').classList.remove('active');
+            }
+        });
+        document.querySelectorAll('.flash').forEach(el => {
+            setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
